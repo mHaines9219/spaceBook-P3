@@ -26,25 +26,29 @@ export default function ProfileEditPage({ myProfile, setMyProfile }) {
     const submitRes = await update(formData);
     console.log(submitRes);
     await setMyProfile(submitRes);
-    return navigate("/profiles/"+myProfile.user);
+    return navigate("/profiles/" + myProfile.user);
   }
-  async function handleDelete(){
-    if (window.confirm('Are you sure you want to delete this?')) {
+  async function handleDelete() {
+    if (window.confirm("Are you sure you want to delete this?")) {
       // delete it!
-      console.log('profile should be deleted');
+      console.log("profile should be deleted");
       // const d = await deleteProfile();
       // logOut();
       // setUser(null);
     } else {
       // Do nothing!
-      console.log('back to edit profile');
+      console.log("back to edit profile");
     }
   }
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <div id="photo-container-edit-page">insert photo div</div>
-
+      <form onSubmit={handleSubmit} enctype="multipart/form-data">
+        <div id="photo-container">
+          <label for="file-upload" class="custom-file-upload">
+            <p class="upload-photo-text">Upload Photo</p>
+          </label>
+          <input type="file" id="file-upload" name="avatar" />
+        </div>
         <div>
           <label htmlFor="username">Username:</label>
           <input
@@ -103,7 +107,9 @@ export default function ProfileEditPage({ myProfile, setMyProfile }) {
         </div>
       </form>
       <div>
-        <button id="deleteProfile" onClick={handleDelete}>Delete Profile</button>
+        <button id="deleteProfile" onClick={handleDelete}>
+          Delete Profile
+        </button>
       </div>
     </>
   );
