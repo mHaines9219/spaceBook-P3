@@ -11,6 +11,8 @@ import { getOther } from "../../utilities/profiles-api";
 export default function Profile({ myProfile }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [otherProfile, setOtherProfile] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   let { id } = useParams();
 
   // // Using pagePosts as it should load the posts for the profile/:id-- not just the logged in user's profile
@@ -51,11 +53,9 @@ export default function Profile({ myProfile }) {
         // Handle the error, e.g., set an error state, display a message, etc.
       }
     }
-  
+
     checkOther();
   }, [id, myProfile]);
-
-
 
   // // Function to retrieve all posts for the user's Profile page
   // useEffect(function () {
@@ -71,6 +71,25 @@ export default function Profile({ myProfile }) {
   //   }
   //   getPagePosts();
   // }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const fetchProfileData = async () => {
+      if (id !== myProfile.user) {
+        const other = await getOther(id);
+        setOtherProfile(other);
+      } else {
+        setOtherProfile(null);
+      }
+      setIsLoading(false);
+    };
+
+    fetchProfileData();
+  }, [id, myProfile.user]);
+
+  if (isLoading) {
+    return <div>Loading profile...</div>; // Or any other loading indicator
+  }
 
   return (
     <>
