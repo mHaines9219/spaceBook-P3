@@ -12,45 +12,65 @@ export default function Profile({ myProfile }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [otherProfile, setOtherProfile] = useState(false);
   let { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
 
+  // // Using pagePosts as it should load the posts for the profile/:id-- not just the logged in user's profile
+  // const [pagePosts, setPagePosts] = useState([]);
+
+  // useEffect(() => {
+  //   checkOther();
+  //   async function checkOther() {
+  //     //console.log(`the myProfile _id:${myProfile._id}, and myProfile.user:${myProfile.user} and, params id:${id}`);
+  //     //if params matches myProfile.user then nothing
+  //     if (myProfile.user === id) {
+  //       console.log("they are the same");
+  //       setOtherProfile(null);
+  //     } else {
+  //       //else get other profile
+  //       //console.log(`they diff `);
+  //       const other = await getOther(id);
+  //       await setOtherProfile(other);
+  //       //return other;
+  //       //console.log(otherProfile);
+  //     }
+  //   }
+  // }, [id, myProfile]);
   useEffect(() => {
-    checkOther();
-
     async function checkOther() {
-      //console.log(`the myProfile _id:${myProfile._id}, and myProfile.user:${myProfile.user} and, params id:${id}`);
-      //if params matches myProfile.user then nothing
-      if (myProfile.user === id) {
-        console.log("they are the same");
-        setOtherProfile(null);
-      } else {
-        //else get other profile
-        //console.log(`they diff `);
-        const other = await getOther(id);
-        await setOtherProfile(other);
-        //return other;
-        //console.log(otherProfile);
+      try {
+        // if params matches myProfile.user then nothing
+        if (myProfile.user === id) {
+          console.log("they are the same");
+          setOtherProfile(null);
+        } else {
+          // else get other profile
+          const other = await getOther(id);
+          setOtherProfile(other);
+        }
+      } catch (error) {
+        console.error("Error checking other profile:", error);
+        // Handle the error, e.g., set an error state, display a message, etc.
       }
     }
+  
+    checkOther();
   }, [id, myProfile]);
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchProfileData = async () => {
-      if (id !== myProfile.user) {
-        const other = await getOther(id);
-        setOtherProfile(other);
-      } else {
-        setOtherProfile(null);
-      }
-      setIsLoading(false);
-    };
 
-    fetchProfileData();
-  }, [id, myProfile.user]);
 
-  if (isLoading) {
-    return <div>Loading profile...</div>; // Or any other loading indicator
-  }
+
+  // // Function to retrieve all posts for the user's Profile page
+  // useEffect(function () {
+  //   async function getPagePosts() {
+  //     console.log("get profile page's Posts");
+  //     //console.log(id);
+  //     // Get the array of posts from the page profile's posts array
+  //     // The controller then populates an array of posts documents from the profile's posts array
+  //     // const posts = await getPosts(id);
+  //     // console.log(posts);
+  //     // // Set pagePosts state with the array of posts documents returned to the posts variable
+  //     // setPagePosts(posts);
+  //   }
+  //   getPagePosts();
+  // }, []);
 
   return (
     <>
